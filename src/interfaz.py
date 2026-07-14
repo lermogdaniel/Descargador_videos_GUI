@@ -64,6 +64,11 @@ class DescargadorYoutube(ctk.CTk):
         self.menu_calidad = ctk.CTkOptionMenu(self.frame_calidad, values=["Seleccionar"])
         self.menu_calidad.pack(side="left", padx=10)
 
+        # --- BARRA DE PROGRESO DE DESCARGA --- #
+        self.progreso_barra = ctk.CTkProgressBar(self.frame_info, width=400)
+        self.progreso_barra.pack(pady=5)
+        self.progreso_barra.set(0)
+
         # --- ESTADO/CARGA --- #
         self.label_estado = ctk.CTkLabel(self, text='Listo para escanear', font=ctk.CTkFont(size=12))
         self.label_estado.pack(side='bottom', pady=10)
@@ -120,10 +125,29 @@ class DescargadorYoutube(ctk.CTk):
     def _hilo_descargar(self, calidad):
         """Este método se ejecuta en el hilo secundario y calcula el éxito localmente."""
         # Ejecutamos la descarga física (Esta función de motor_video devuelve True o False)
-        resultado_exito = descargar_video(self.video_actual_url, calidad)
+        resultado_exito = descargar_video(self.video_actual_url, calidad, self.callback_progreso)
         
         # Volvemos de forma segura al hilo principal (GUI) para mostrar el resultado visual
         self.after(0, self._finalizar_descarga, resultado_exito)
+
+    def callback_progreso(self, d):
+        '''Captura el estado de la descarga y actualiza la GUI'''
+        if d['status'] == 'downloading':
+            total_bytes = d.get('total_bytes') or d.get('total_bytes_estimate')
+            bytes_descargados = d.get('downloaded_bytes', 0)
+
+            if total_bytes:
+                # Calcular el porcentaje decimal de 0 a 1
+                porcentaje = bytes_descargados / total_bytes
+                porcentaje_texto = porcentaje * 100
+
+                # Formatear texto de velocidad y descarga
+                velocidad = d.get('_speed_str', 'Calculando...')
+                texto_estado = f'Descargando... {porcentaje_texto:.1f}% de {velocidad}'
+
+                # Actualizar la GUI
+                self.after(0, lambda: self.progreso_barra.set(porcentaje))
+                self.after(0, lambda: self.label_estado.configure(text=texto_estado))
 
     def _finalizar_descarga(self, exito):
         """Este método sí recibe el parámetro 'exito' desde el after."""
