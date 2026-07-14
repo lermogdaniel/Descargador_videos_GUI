@@ -48,7 +48,7 @@ def descargar_video(url: str, calidad: str) -> bool:
     '''
     # Rutas de la carpeta descargas del usuario y destino de el archivo descargado
     ruta_descarga = Path.home() / 'Downloads'
-    ruta_salida = str(ruta_descarga / '%(title)s.mp4')
+    ruta_salida = str(ruta_descarga / '%(title)s.%(ext)s')
 
     resolucion = calidad.replace('p', '')
     resolucion_formato = f'bestvideo[height<={resolucion}]+bestaudio/best[height<={resolucion}]'
@@ -56,8 +56,6 @@ def descargar_video(url: str, calidad: str) -> bool:
     # Opciones de descarga
     ydl_opts = {
         'format' : resolucion_formato,
-        'merge_output_format' : 'mp4',
-        'remux_video' : 'mp4',
         'outtmpl' : ruta_salida,
         'quiet' : True,
     }
