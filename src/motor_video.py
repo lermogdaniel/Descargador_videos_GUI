@@ -41,7 +41,7 @@ def extraer_metadatos(url: str) -> dict | None:
         print(f'Error al extraer datos con yt-dlp: {e}')
         return None
     
-def descargar_video(url: str, calidad: str) -> bool:
+def descargar_video(url: str, calidad: str, funcion_hook) -> bool:
     '''
     Descarga el video en la mejor calidad disponible
     en la carpeta descargas del usuario
@@ -58,6 +58,7 @@ def descargar_video(url: str, calidad: str) -> bool:
         'format' : resolucion_formato,
         'outtmpl' : ruta_salida,
         'quiet' : True,
+        'progress_hooks' : [funcion_hook]
     }
 
     try:
