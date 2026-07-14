@@ -13,6 +13,7 @@ class DescargadorYoutube(ctk.CTk):
         super().__init__()
         self.geometry('1280x720')
         self.title('Youtube Downloader')
+        self.wm_iconbitmap('./ico.ico')
 
         self.video_actual_url = None
 
