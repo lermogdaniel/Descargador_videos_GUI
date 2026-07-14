@@ -67,8 +67,7 @@ class DescargadorYoutube(ctk.CTk):
 
         # --- BARRA DE PROGRESO DE DESCARGA --- #
         self.progreso_barra = ctk.CTkProgressBar(self.frame_info, width=400)
-        self.progreso_barra.pack(pady=5)
-        self.progreso_barra.set(0)
+        self.progreso_barra.pack_forget()
 
         # --- ESTADO/CARGA --- #
         self.label_estado = ctk.CTkLabel(self, text='Listo para escanear', font=ctk.CTkFont(size=12))
@@ -80,6 +79,9 @@ class DescargadorYoutube(ctk.CTk):
         if not url: return
 
         url_limpia = url.split('&')[0]
+
+        self.progreso_barra.pack_forget()
+        self.progreso_barra.set(0)
 
         self.label_estado.configure(text='Analizando video...')
         self.boton_buscar.configure(state='disabled')
@@ -120,6 +122,9 @@ class DescargadorYoutube(ctk.CTk):
         resolucion_seleccionada = self.menu_calidad.get()
         self.boton_descargar.configure(state='disabled', text='Descargando...')
         self.label_estado.configure(text = 'Descargando archivos a tu pc...')
+
+        self.progreso_barra.pack(pady=20, padx=20)
+        self.progreso_barra.set(0)
 
         threading.Thread(target=self._hilo_descargar, args=(resolucion_seleccionada,), daemon=True).start()
 
