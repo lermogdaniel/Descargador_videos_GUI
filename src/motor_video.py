@@ -51,14 +51,14 @@ def descargar_video(url: str, calidad: str, funcion_hook) -> bool:
     ruta_salida = str(ruta_descarga / '%(title)s.%(ext)s')
 
     resolucion = calidad.replace('p', '')
-    resolucion_formato = f'bestvideo[height<={resolucion}]+bestaudio/best[height<={resolucion}]'
+    resolucion_formato = f'bestvideo[height<={resolucion}]+bestaudio[ext=m4a]/best[height<={resolucion}]'
 
     # Opciones de descarga
     ydl_opts = {
         'format' : resolucion_formato,
         'outtmpl' : ruta_salida,
         'quiet' : True,
-        'progress_hooks' : [funcion_hook]
+        'progress_hooks' : [funcion_hook],
     }
 
     try:
